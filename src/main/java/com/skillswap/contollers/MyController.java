@@ -52,6 +52,19 @@ public class MyController {
 		   
 		   
 	   }
+	   
+	   @PostMapping("/userLogin")
+	   public String userLogin(@ModelAttribute("user") User user) {
+		   System.out.println(user.getEmail());
+		   boolean b=userservice.userLogin(user);
+		   if(b==true) {
+			   System.out.println("User is present in the database with credentials: "+user.getEmail()+" "+user.getPassword());
+			   return "index";
+		   }
+		   else {
+		   return "login";
+		   }
+	   }
 
 }
 

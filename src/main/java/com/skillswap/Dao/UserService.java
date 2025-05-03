@@ -8,5 +8,7 @@ import com.skillswap.entity.User;
 public interface UserService {
 	
 	public boolean userRegister(User user);
+	
+	public boolean userLogin(User user);
 
 }

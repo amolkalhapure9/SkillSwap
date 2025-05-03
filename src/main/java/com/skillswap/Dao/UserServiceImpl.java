@@ -1,5 +1,8 @@
 package com.skillswap.Dao;
 
+
+
+import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -25,6 +28,15 @@ public class UserServiceImpl implements UserService {
 			
 		}
 	
+	}
+
+	@Override
+	public boolean userLogin(User user) {
+		
+		Optional<User> foundUser=op.findByEmailAndPassword(user.getEmail(), user.getPassword());
+		
+	
+		return foundUser.isPresent();
 	}
 
 }
