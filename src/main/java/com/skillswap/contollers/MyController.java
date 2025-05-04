@@ -1,8 +1,12 @@
 package com.skillswap.contollers;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -10,6 +14,8 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.skillswap.Dao.UserService;
 import com.skillswap.entity.User;
+
+import jakarta.validation.Valid;
 
 
 
@@ -39,11 +45,32 @@ public class MyController {
 	   }
 	   
 	   @PostMapping("/userregister")
-	   public String userRegister(@ModelAttribute("user") User user) {
-		   boolean res=userservice.userRegister(user);
+	   public String userRegister(@Valid @ModelAttribute("user") User user, BindingResult result, Model model) {
 		   
-		   if(res==true) {
+		   if(result.hasErrors()) {
+			   Map<String, String> errors=new HashMap<>();
+			   
+			   result.getFieldErrors().forEach(error -> {
+		            errors.put(error.getField(), error.getDefaultMessage());
+		        });
+			   model.addAttribute("errors",errors);
+			   
+			   System.out.print(errors);
+			   
+			   return "register";
+		   }
+		   else if(!result.hasErrors()) {
+		  
+		   boolean res=userservice.userRegister(user);
+		  
+		   
+		  if(res==true) {
+			  
 			   return "index";
+		   }
+		  else {
+			  return "register";
+		  }
 		   }
 		   else {
 			   return "register";
