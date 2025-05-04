@@ -1,5 +1,7 @@
 package com.skillswap.entity;
 
+import org.hibernate.validator.constraints.pl.REGON;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -10,6 +12,7 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 
 @Entity
@@ -22,7 +25,6 @@ public class User {
 	private int id;
 	
 	@Column
-	@NotNull
 	@NotEmpty(message="Name should not empty")
 	private String fname;
 	
@@ -35,8 +37,8 @@ public class User {
 	@Email(message="Please enter valid email")
 	private String email;
 	
-	@Column
-	@Size(min=4, max=10, message="Password should contain minimum 4 letters and maximum 10")
+	 @Column
+	 @NotEmpty(message = "Please enter a password")
 	private String password;
 
 	public int getId() {

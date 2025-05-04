@@ -1,9 +1,11 @@
 package com.skillswap.contollers;
 
+
 import java.util.HashMap;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -15,6 +17,7 @@ import org.springframework.web.servlet.ModelAndView;
 import com.skillswap.Dao.UserService;
 import com.skillswap.entity.User;
 
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 
 
@@ -45,7 +48,7 @@ public class MyController {
 	   }
 	   
 	   @PostMapping("/userregister")
-	   public String userRegister(@Valid @ModelAttribute("user") User user, BindingResult result, Model model) {
+	   public String userRegister(@Valid @ModelAttribute("user") User user, BindingResult result, Model model,HttpServletRequest req ) {
 		   
 		   if(result.hasErrors()) {
 			   Map<String, String> errors=new HashMap<>();
@@ -60,21 +63,43 @@ public class MyController {
 			   return "register";
 		   }
 		   else if(!result.hasErrors()) {
+			   String cpassword=req.getParameter("cpassword");
+			   if(!user.getPassword().equals(cpassword)) {
+				   model.addAttribute("cpassword","Please enter same password");
+				   return "register";
+			   }
+			   else {
+				   boolean b=userservice.userLogin(user);
+				   if(b==true) {
+					   model.addAttribute("exists","Email already used");
+					   return "register";
+				   }
+				   else {
+					   
+					   try {
+						   boolean c=userservice.userRegister(user);
+						   if(c==true) {
+							   System.out.println("You have successfully registered");
+							   return "index";
+						   }
+						   else {
+							   return "register";
+						   }
+						   
+					   }
+					   catch(Exception e) {
+						   return "register";
+						   
+					   }
+					   
+				   }
+			   }
+			   
+		   }
 		  
-		   boolean res=userservice.userRegister(user);
 		  
-		   
-		  if(res==true) {
-			  
-			   return "index";
-		   }
-		  else {
-			  return "register";
-		  }
-		   }
-		   else {
-			   return "register";
-		   }
+		   return "index";
+		  
 		   
 		   
 		   
