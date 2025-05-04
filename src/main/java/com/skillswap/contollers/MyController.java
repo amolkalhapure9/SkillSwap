@@ -80,7 +80,8 @@ public class MyController {
 						   boolean c=userservice.userRegister(user);
 						   if(c==true) {
 							   System.out.println("You have successfully registered");
-							   return "index";
+							   model.addAttribute("Registered","You have successfully registered. Please Login");
+							   return "login";
 						   }
 						   else {
 							   return "register";
@@ -106,16 +107,31 @@ public class MyController {
 	   }
 	   
 	   @PostMapping("/userLogin")
-	   public String userLogin(@ModelAttribute("user") User user) {
-		   System.out.println(user.getEmail());
-		   boolean b=userservice.userLogin(user);
-		   if(b==true) {
-			   System.out.println("User is present in the database with credentials: "+user.getEmail()+" "+user.getPassword());
-			   return "index";
+	   public String userLogin(@Valid @ModelAttribute("user") User user, BindingResult result, Model model) {
+		   
+		   if(result.hasErrors()) {
+			   Map<String, String> errors=new HashMap<>();
+			   
+			   result.getFieldErrors().forEach(error -> {
+		            errors.put(error.getField(), error.getDefaultMessage());
+		        });
+			   model.addAttribute("errors",errors);
+			   
+			   System.out.print(errors);
+			   
+			   return "login";
 		   }
+		   
+//		   System.out.println(user.getEmail());
+//		   boolean b=userservice.userLogin(user);
+//		   if(b==true) {
+//			   System.out.println("User is present in the database with credentials: "+user.getEmail()+" "+user.getPassword());
+//			   return "index";
+//		   }
 		   else {
 		   return "login";
 		   }
+		  
 	   }
 
 }
