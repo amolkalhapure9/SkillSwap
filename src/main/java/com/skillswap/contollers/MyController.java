@@ -15,9 +15,11 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.skillswap.Dao.UserService;
+import com.skillswap.dtos.LoginDTO;
 import com.skillswap.entity.User;
 
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 
 
@@ -41,7 +43,7 @@ public class MyController {
 	   
 	   @GetMapping("/loginPage")
 	   public String loginUser(Model model) {
-		   model.addAttribute("user", new User());
+		   model.addAttribute("loginDTO", new LoginDTO());
 		   return "login";
 		   
 		   
@@ -69,8 +71,8 @@ public class MyController {
 				   return "register";
 			   }
 			   else {
-				   boolean b=userservice.userLogin(user);
-				   if(b==true) {
+				  
+				   if(userservice.existsByEmail(user.getEmail())) {
 					   model.addAttribute("exists","Email already used");
 					   return "register";
 				   }
@@ -107,7 +109,7 @@ public class MyController {
 	   }
 	   
 	   @PostMapping("/userLogin")
-	   public String userLogin(@Valid @ModelAttribute("user") User user, BindingResult result, Model model) {
+	   public String userLogin(@Valid @ModelAttribute("loginDTO") LoginDTO loginDTO, BindingResult result, Model model, HttpSession session) {
 		   
 		   if(result.hasErrors()) {
 			   Map<String, String> errors=new HashMap<>();
@@ -121,17 +123,48 @@ public class MyController {
 			   
 			   return "login";
 		   }
-		   
-//		   System.out.println(user.getEmail());
-//		   boolean b=userservice.userLogin(user);
-//		   if(b==true) {
-//			   System.out.println("User is present in the database with credentials: "+user.getEmail()+" "+user.getPassword());
-//			   return "index";
-//		   }
 		   else {
-		   return "login";
+			   model.addAttribute("loginDTO",loginDTO);
+			   System.out.println(loginDTO.getEmail());
+			   boolean b=userservice.userLogin(loginDTO);
+			   if(b==true) {
+				   System.out.println("User is present in the database with credentials: "+loginDTO.getEmail()+" "+loginDTO.getPassword());
+				   User user=userservice.getUserByEmail(loginDTO.getEmail());
+				   session.setAttribute("user", user);
+				  
+				   return "redirect:/profile";
+			   }
+			   else {
+				   model.addAttribute("userexists","Please enter correct email or password");
+				
+				   return "login";
+			   }
+			   
 		   }
+		   
+		   
+		   
 		  
+	   }
+	   
+	   @GetMapping("/profile")
+	   public String openProfile(HttpSession session, Model model) {
+		   User user=(User)session.getAttribute("user");
+		   if(user==null) {
+			   return "redirect:/login";
+		   }
+		   else {
+			   model.addAttribute("user",user);
+			   return "profile";
+		   }
+		   
+	   }
+	   
+	   @GetMapping("/openUpdateProfile")
+	   public String openUpdateProfile() {
+		  
+		    return "updateprofile";
+		   
 	   }
 
 }

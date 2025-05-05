@@ -13,6 +13,11 @@ public interface JpaOperation extends JpaRepository<User, Integer> {
 	Optional<User> findByEmailAndPassword(String email, String Password);
 	
 	
+	boolean existsByEmail(String email);
+	
+	User findByEmail(String email);
+	
+	
 	
 
 }

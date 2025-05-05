@@ -6,6 +6,7 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.skillswap.dtos.LoginDTO;
 import com.skillswap.entity.User;
 import com.skillswap.jpa.JpaOperation;
 
@@ -31,12 +32,24 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public boolean userLogin(User user) {
+	public boolean userLogin(LoginDTO loginDTO) {
 		
-		Optional<User> foundUser=op.findByEmailAndPassword(user.getEmail(), user.getPassword());
+		Optional<User> foundUser=op.findByEmailAndPassword(loginDTO.getEmail(), loginDTO.getPassword());
 		
 	
 		return foundUser.isPresent();
+	}
+
+	@Override
+	public boolean existsByEmail(String email) {
+		return op.existsByEmail(email);
+		
+	}
+
+	@Override
+	public User getUserByEmail(String email) {
+		// TODO Auto-generated method stub
+		return op.findByEmail(email);
 	}
 
 }
