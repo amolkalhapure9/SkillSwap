@@ -14,9 +14,13 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.skillswap.Dao.UpdateProfileService;
 import com.skillswap.Dao.UserService;
 import com.skillswap.dtos.LoginDTO;
+import com.skillswap.entity.UpdateProfile;
 import com.skillswap.entity.User;
+import com.skillswap.jpa.JpaOperation;
+import com.skillswap.jpa.UpDateProfileOperation;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
@@ -29,6 +33,15 @@ public class MyController {
 	
 	@Autowired
 	 UserService userservice;
+	
+	@Autowired
+	UpdateProfileService profileUpdate;
+	
+	@Autowired
+	JpaOperation op;
+	
+	@Autowired
+	UpDateProfileOperation up;
 	
 	@GetMapping("/")
 	public String openIndex() {
@@ -83,6 +96,7 @@ public class MyController {
 						   if(c==true) {
 							   System.out.println("You have successfully registered");
 							   model.addAttribute("Registered","You have successfully registered. Please Login");
+							   model.addAttribute("loginDTO",new LoginDTO());
 							   return "login";
 						   }
 						   else {
@@ -161,11 +175,48 @@ public class MyController {
 	   }
 	   
 	   @GetMapping("/openUpdateProfile")
-	   public String openUpdateProfile() {
+	   public String openUpdateProfile(HttpSession session,Model model) {
+		   model.addAttribute("updateProfile",new UpdateProfile());
+		   
+		   
+		   
 		  
 		    return "updateprofile";
 		   
 	   }
+	   
+	   @PostMapping("/updateProfile")
+	   public String updateProfile(@ModelAttribute("updateProfile") UpdateProfile updateProfile, HttpSession session, Model model) {
+		   User user=(User)session.getAttribute("user");
+		   model.addAttribute("user",user);
+		   
+		   boolean b=profileUpdate.updateProfile(updateProfile);
+		   
+		   UpdateProfile tobedelete=user.getDetails();
+		   if(tobedelete!=null) {
+			   user.setDetails(null);
+			   op.save(user);
+			   up.deleteById(tobedelete.getId());
+			  
+		
+			   
+		   }
+		   
+		   
+		   user.setDetails(updateProfile);
+		   updateProfile.setUser(user);
+		   
+		   
+		   op.save(user);
+		   
+		   
+		   return "profile";
+		   
+	   }
+	   
+	
+	   
+	 
 
 }
 

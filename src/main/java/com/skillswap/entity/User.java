@@ -7,6 +7,8 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -40,6 +42,19 @@ public class User {
 	 @Column
 	 @NotEmpty(message = "Please enter a password")
 	private String password;
+	 
+	 
+	 @OneToOne
+	 @JoinColumn(name = "details_id", referencedColumnName = "id")
+	 private UpdateProfile details;
+
+	public UpdateProfile getDetails() {
+		return details;
+	}
+
+	public void setDetails(UpdateProfile details) {
+		this.details = details;
+	}
 
 	public int getId() {
 		return id;
