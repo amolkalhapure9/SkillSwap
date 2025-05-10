@@ -1,13 +1,20 @@
 package com.skillswap.entity;
 
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
 import org.hibernate.validator.constraints.pl.REGON;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.Email;
@@ -47,6 +54,22 @@ public class User {
 	 @OneToOne
 	 @JoinColumn(name = "details_id", referencedColumnName = "id")
 	 private UpdateProfile details;
+	 
+	 @ManyToMany(cascade=CascadeType.ALL)
+	 @JoinTable(
+			 name = "user_skills",
+		     joinColumns = @JoinColumn(name = "user_id"),
+		     inverseJoinColumns = @JoinColumn(name = "skill_id")
+			 )
+	 private Set<Skill> skills= new HashSet<>();
+
+	public Set<Skill> getSkills() {
+		return skills;
+	}
+
+	public void setSkills(Set<Skill> skills) {
+		this.skills = skills;
+	}
 
 	public UpdateProfile getDetails() {
 		return details;

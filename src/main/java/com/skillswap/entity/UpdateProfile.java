@@ -7,6 +7,8 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.Pattern;
 
 @Entity
 @Table
@@ -16,10 +18,12 @@ public class UpdateProfile {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;
 	
+	
 	@Column
 	private String Bio;
 	
 	@Column
+	@NotEmpty(message="Please enter mobile no")
 	private String mobile;
 	
 	@Column

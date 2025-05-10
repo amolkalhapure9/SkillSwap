@@ -13,8 +13,8 @@
     <img src="/images/avatar.jpg" alt="Profile" class="w-20 h-20 rounded-full border-2 border-gray-300 object-cover" />
     <div>
       <h2 class="text-2xl font-bold"></h2><div th:text="${user.fname+' '+user.lname}"></div>
-      <p class="text-gray-600">Nashik, India</p>
-      <p class="text-sm text-gray-500">Web Developer | Passionate about AI & Learning Guitar</p>
+      <p class="text-gray-600" th:if="${user.details!=null}" th:text="${user.details.city+', '+ user.details.country}"></p>
+      <p class="text-sm text-gray-500" th:if="${user.details!=null}" th:text="${user.details.bio}"></p>
     </div>
     <button class="ml-auto px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl"><a href="openUpdateProfile">✏️ Edit Profile</a></button>
   </div>
@@ -26,19 +26,21 @@
     <div class="bg-white p-6 shadow rounded-2xl">
       <h3 class="text-xl font-semibold mb-4">🧑‍🏫 Skills I Can Teach</h3>
       <div class="flex flex-wrap gap-3 mb-4">
-        <span class="px-3 py-1 bg-green-100 text-green-800 rounded-full">Spring Boot (Expert)</span>
-        <span class="px-3 py-1 bg-green-100 text-green-800 rounded-full">Java (Intermediate)</span>
-        <span class="px-3 py-1 bg-green-100 text-green-800 rounded-full">Excel (Advanced)</span>
+       
+        <span class="flex items-center px-3 py-1 bg-green-100 text-green-800 rounded-full space-x-2" th:each="skill : ${skill}">
+    <p class="inline" th:text="${skill.name}"></p>
+    <a th:href="@{'/removeskills/'+${skill.id}}" class="text-gray-600 hover:text-red-600 font-bold">❌</a>
+</span>
+        
       </div>
-      <button class="px-3 py-2 bg-green-600 hover:bg-green-700 text-white rounded-xl text-sm">➕ Add Skill</button>
+      <button class="px-3 py-2 bg-green-600 hover:bg-green-700 text-white rounded-xl text-sm"><a href="addskills">➕ Add Skill</a></button>
     </div>
 
     <!-- Skills I Want to Learn -->
     <div class="bg-white p-6 shadow rounded-2xl">
       <h3 class="text-xl font-semibold mb-4">🎯 Skills I Want to Learn</h3>
       <div class="flex flex-wrap gap-3 mb-4">
-        <span class="px-3 py-1 bg-yellow-100 text-yellow-800 rounded-full">React.js (Beginner)</span>
-        <span class="px-3 py-1 bg-yellow-100 text-yellow-800 rounded-full">Guitar</span>
+        
       </div>
       <button class="px-3 py-2 bg-yellow-600 hover:bg-yellow-700 text-white rounded-xl text-sm">➕ Add Skill</button>
     </div>

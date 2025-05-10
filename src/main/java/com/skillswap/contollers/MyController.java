@@ -2,8 +2,13 @@ package com.skillswap.contollers;
 
 
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
 
+import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpRequest;
 import org.springframework.stereotype.Controller;
@@ -11,15 +16,19 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.skillswap.Dao.UpdateProfileService;
 import com.skillswap.Dao.UserService;
 import com.skillswap.dtos.LoginDTO;
+import com.skillswap.entity.Skill;
 import com.skillswap.entity.UpdateProfile;
 import com.skillswap.entity.User;
 import com.skillswap.jpa.JpaOperation;
+import com.skillswap.jpa.SkillOperation;
 import com.skillswap.jpa.UpDateProfileOperation;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -42,6 +51,9 @@ public class MyController {
 	
 	@Autowired
 	UpDateProfileOperation up;
+	
+	@Autowired
+	SkillOperation skillOperation;
 	
 	@GetMapping("/")
 	public String openIndex() {
@@ -168,7 +180,13 @@ public class MyController {
 			   return "redirect:/login";
 		   }
 		   else {
-			   model.addAttribute("user",user);
+			   Optional<User> managedUserOptional=op.findById(user.getId());
+			   User managedUser=managedUserOptional.get();
+			   Set<Skill> skill=managedUser.getSkills();
+			   
+			   model.addAttribute("skill",managedUser.getSkills());
+			   model.addAttribute("user",managedUser);
+			   session.setAttribute("user", managedUser);
 			   return "profile";
 		   }
 		   
@@ -178,6 +196,13 @@ public class MyController {
 	   public String openUpdateProfile(HttpSession session,Model model) {
 		   model.addAttribute("updateProfile",new UpdateProfile());
 		   
+		   User user=(User)session.getAttribute("user");
+		   
+		   if(user.getDetails()!=null) {
+			   UpdateProfile updateProfile=user.getDetails();
+			   model.addAttribute("updateProfile", updateProfile);
+		   }
+		   
 		   
 		   
 		  
@@ -186,7 +211,9 @@ public class MyController {
 	   }
 	   
 	   @PostMapping("/updateProfile")
-	   public String updateProfile(@ModelAttribute("updateProfile") UpdateProfile updateProfile, HttpSession session, Model model) {
+	   public String updateProfile(@Valid @ModelAttribute("updateProfile") UpdateProfile updateProfile, HttpSession session, Model model, BindingResult result) {
+		   
+		   
 		   User user=(User)session.getAttribute("user");
 		   model.addAttribute("user",user);
 		   
@@ -212,11 +239,100 @@ public class MyController {
 		   
 		   return "profile";
 		   
+		     
+		   
 	   }
 	   
-	
+	   @GetMapping("/addskills")
+	   public String openAddSkills(Model model, HttpSession session) {
+		   User user=(User)session.getAttribute("user");
+		   
+		  
+		   
+		   User managedUser = op.findById(user.getId()).orElse(null);
+		 
+		    
+		    if (managedUser != null) {
+		        // Initialize the lazy-loaded skills collection
+		        Hibernate.initialize(managedUser.getSkills());
+		    }
+		   
+		   
+		   
+		   List<Skill> allskills=skillOperation.findAll();
+		   model.addAttribute("allskills", allskills);
+		   
+		   System.out.print(allskills);
+		   
+		   
+		   model.addAttribute("user",managedUser);		   
+		   return "addskills";
+		   
+	   }
 	   
-	 
+	   @PostMapping("/saveSkills")
+	   public String addSkills(@RequestParam("skillIds") List<Integer> skillIds,Model model, HttpSession session) {
+		   
+		   User user=(User)session.getAttribute("user");
+		   
+		   Optional<User> managedUserOptional=op.findById(user.getId());
+		   
+		   if(managedUserOptional.isPresent()) {
+			   User managedUser=managedUserOptional.get();
+			   List<Skill> selectedSkills=skillOperation.findAllById(skillIds);
+			   
+			   managedUser.getSkills().addAll(selectedSkills);
+			   
+			   op.save(managedUser);
+			   
+			   User updatedUser = op.findById(managedUser.getId()).get();
+		        Hibernate.initialize(updatedUser.getSkills());
+		        
+			  
+			   model.addAttribute("user",updatedUser);
+			   session.setAttribute("user", updatedUser);
+			   model.addAttribute("skill", updatedUser.getSkills());
+			   
+		   }
+		   return "profile";
+		  
+		   
+		   
+		   
+		   
+		   
+		   
+	   }
+	   
+	   @GetMapping("/removeskills/{skillId}")
+	   public String removeSkills(@PathVariable("skillId") Integer id, Model model, HttpSession session) {
+		   User sessionUser=(User)session.getAttribute("user");
+		   
+		   Optional<User> managedUserOptional=op.findById(sessionUser.getId());
+		   
+		   if(managedUserOptional.isPresent()) {
+			   User managedUser=managedUserOptional.get();
+			   
+			   Optional<Skill> optionalSkill=skillOperation.findById(id);
+			   if(optionalSkill!=null) {
+				   Skill skill=optionalSkill.get();
+				   managedUser.getSkills().remove(skill);
+				   
+				   op.save(managedUser);
+			   }
+			   
+			   model.addAttribute("user", managedUser);
+               session.setAttribute("user", managedUser);
+               model.addAttribute("skill",managedUser.getSkills());
+			   
+		   }
+		   
+		   
+		   return "redirect:/profile";
+		   
+	   }
+	   
+ 
 
 }
 

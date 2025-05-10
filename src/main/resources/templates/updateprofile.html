@@ -23,10 +23,7 @@
         <h3 class="mb-4 text-center">Edit Your Profile</h3>
 
         <form th:action="@{/updateProfile}" th:object="${updateProfile}"  method="post">
-            <div class="mb-3">
-                <label class="form-label">Full Name</label>
-                <input type="text"  class="form-control"  placeholder="Your name" required>
-            </div>
+           
 
             <div class="mb-3">
                 <label class="form-label">Bio</label>
@@ -34,23 +31,26 @@
             </div>
 
             <div class="mb-3">
+             <div th:if="${#fields.hasErrors('mobile')}" th:errors="*{mobile}" class="error"></div>
                 <label class="form-label">Phone</label>
                 <input type="text" th:field="*{mobile}" class="form-control"  placeholder="+91...">
             </div>
 
             <div class="mb-3">
+                           <div th:if="${#fields.hasErrors('city')}" th:errors="*{city}" class="error"></div>
                 <label class="form-label">City</label>
                 <input type="text" th:field="*{city}" class="form-control"  placeholder="City, Country">
             </div>
             
             <div class="mb-3">
+                           <div th:if="${#fields.hasErrors('country')}" th:errors="*{country}" class="error"></div>
                 <label class="form-label">Country</label>
                 <input type="text" th:field="*{country}" class="form-control"  placeholder="City, Country">
             </div>
 
             <div class="d-grid gap-2">
                 <button type="submit" class="btn btn-primary">Save Changes</button>
-                <a href="/dashboard" class="btn btn-outline-secondary">Cancel</a>
+                <a href="/profile" class="btn btn-outline-secondary">Cancel</a>
             </div>
         </form>
     </div>
