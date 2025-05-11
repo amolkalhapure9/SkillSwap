@@ -7,5 +7,7 @@ import com.skillswap.entity.Skill;
 
 @Repository
 public interface SkillOperation extends JpaRepository<Skill, Integer> {
+	
+	
 
 }

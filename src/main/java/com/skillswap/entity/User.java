@@ -62,6 +62,8 @@ public class User {
 		     inverseJoinColumns = @JoinColumn(name = "skill_id")
 			 )
 	 private Set<Skill> skills= new HashSet<>();
+	 
+
 
 	public Set<Skill> getSkills() {
 		return skills;

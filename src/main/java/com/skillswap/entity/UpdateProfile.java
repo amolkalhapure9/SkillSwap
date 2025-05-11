@@ -20,7 +20,7 @@ public class UpdateProfile {
 	
 	
 	@Column
-	private String Bio;
+	private String bio;
 	
 	@Column
 	@NotEmpty(message="Please enter mobile no")
@@ -46,11 +46,11 @@ public class UpdateProfile {
 	}
 
 	public String getBio() {
-		return Bio;
+		return bio;
 	}
 
 	public void setBio(String bio) {
-		Bio = bio;
+		this.bio = bio;
 	}
 
 	public String getMobile() {

@@ -1,0 +1,220 @@
+/* General styling */
+body {
+  font-family: Arial, sans-serif;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+h2, h3 {
+  font-weight: bold;
+}
+
+a {
+  text-decoration: none;
+}
+
+/* Navbar */
+header {
+  background-color: #ffffff;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+header nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+header nav a {
+  color: #4a4a4a;
+  font-size: 16px;
+}
+
+header nav a:hover {
+  color: #1E3A8A;
+}
+
+header h1 {
+  font-size: 1.5rem;
+  color: #1E3A8A;
+}
+
+/* Search Section */
+section.bg-blue-100 {
+  padding-top: 4rem;
+  padding-bottom: 4rem;
+}
+
+section.bg-blue-100 h2 {
+  font-size: 2.5rem;
+  margin-bottom: 1rem;
+}
+
+section.bg-blue-100 p {
+  font-size: 1.125rem;
+  color: #4a4a4a;
+  margin-bottom: 1.5rem;
+}
+
+input[type="text"] {
+  padding: 0.5rem 1rem;
+  border-radius: 0.375rem;
+  border: 2px solid #E5E7EB;
+  transition: border-color 0.3s;
+}
+
+input[type="text"]:focus {
+  border-color: #2563EB;
+}
+
+button {
+  background-color: #2563EB;
+  color: white;
+  padding: 0.5rem 1.5rem;
+  border-radius: 9999px;
+  transition: background-color 0.3s;
+}
+
+button:hover {
+  background-color: #1D4ED8;
+}
+
+/* Tutor Cards */
+section.py-12 {
+  background-color: #ffffff;
+}
+
+section.py-12 h3 {
+  font-size: 2rem;
+  margin-bottom: 2.5rem;
+}
+
+.tutor-card {
+  background-color: #F9FAFB;
+  padding: 1rem;
+  border-radius: 0.5rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.tutor-card img {
+  width: 4rem;
+  height: 4rem;
+  object-fit: cover;
+}
+
+.tutor-card .details {
+  margin-left: 1rem;
+}
+
+.tutor-card .details h4 {
+  font-size: 1.125rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+
+.tutor-card .details p {
+  color: #4a4a4a;
+  font-size: 0.875rem;
+}
+
+.tutor-card p {
+  margin-bottom: 1rem;
+  color: #6B7280;
+}
+
+.tutor-card .buttons a {
+  background-color: #2563EB;
+  color: white;
+  padding: 0.5rem 1rem;
+  border-radius: 9999px;
+  transition: background-color 0.3s;
+  margin-right: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.tutor-card .buttons a:hover {
+  background-color: #1D4ED8;
+}
+
+.tutor-card .buttons a.bg-gray-600:hover {
+  background-color: #4B5563;
+}
+
+.tutor-card .buttons a.bg-green-600:hover {
+  background-color: #16A34A;
+}
+
+/* Responsive Grid Layout for Tutors */
+@media (max-width: 1024px) {
+  .grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 768px) {
+  .grid {
+    grid-template-columns: 1fr;
+  }
+  
+  section.bg-blue-100 h2 {
+    font-size: 2rem;
+  }
+  
+  section.bg-blue-100 p {
+    font-size: 1rem;
+  }
+
+  input[type="text"] {
+    width: 100%;
+  }
+
+  button {
+    width: 100%;
+    margin-top: 1rem;
+  }
+
+  header nav {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  header nav a {
+    margin-top: 0.5rem;
+  }
+}
+
+/* Footer */
+footer {
+  background-color: #1F2937;
+  color: white;
+  padding-top: 2rem;
+  padding-bottom: 2rem;
+  text-align: center;
+}
+
+footer p {
+  margin-bottom: 0.5rem;
+}
+
+footer a {
+  color: #E5E7EB;
+}
+
+footer a:hover {
+  color: #2563EB;
+}
+
+/* Miscellaneous adjustments for buttons in the card */
+.tutor-card .buttons {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+}
+
+.tutor-card .buttons a {
+  margin-right: 10px;
+  margin-bottom: 10px;
+}
