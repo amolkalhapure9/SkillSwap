@@ -20,14 +20,18 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.skillswap.Dao.FriendListService;
 import com.skillswap.Dao.UpdateProfileService;
 import com.skillswap.Dao.UserService;
 import com.skillswap.Dao.UserSkillsService;
 import com.skillswap.dtos.LoginDTO;
 import com.skillswap.dtos.PublicUserDTO;
+import com.skillswap.entity.FriendList;
 import com.skillswap.entity.Skill;
 import com.skillswap.entity.UpdateProfile;
 import com.skillswap.entity.User;
@@ -63,6 +67,9 @@ public class MyController {
 	
 	@Autowired
 	UserSkillsService userSkillService;
+	
+	@Autowired
+	FriendListService friendListService;
 	
 	
 	
@@ -416,6 +423,8 @@ public class MyController {
 				   
 			   }
 			   model.addAttribute("publicusers",publicUser);
+			   model.addAttribute("user",user);
+			   session.setAttribute("user", user);
 			   
 			   System.out.println(publicUser);
 			   
@@ -478,6 +487,132 @@ public class MyController {
 		   
 		   
 		  
+		   
+	   }
+	   
+//	   
+	   @GetMapping("/searchUser")
+	   public String SearchParticularUserList(@RequestParam("searchterm") String searchterm, HttpSession session,Model model) {
+          User user=(User)session.getAttribute("user");
+          
+          if(searchterm.equals("")) {
+        	  return "redirect:/findtutor";
+          }
+		   
+		   if(user==null) {
+			   return "redirect:/loginPage";
+		   }
+		   
+		   List<User> allUsers=op.findAll();
+		   List<PublicUserDTO> publicUser=new ArrayList<>();
+		   
+		   
+		   for(User eachUser: allUsers) {
+			   boolean match=false;
+			   if(!eachUser.getEmail().equals(user.getEmail())) {
+				   
+				   PublicUserDTO dto=new PublicUserDTO();
+				   String name=eachUser.getFname();
+				   String lastname=eachUser.getLname();
+				   if(searchterm.trim().equalsIgnoreCase(name) || searchterm.trim().equalsIgnoreCase(lastname) || searchterm.trim().equalsIgnoreCase(name+" "+lastname)) {
+					   dto.setName(name+" "+lastname);
+					   dto.setId(eachUser.getId());
+					   if(eachUser.getDetails()!=null) {
+						  dto.setBio(eachUser.getDetails().getBio());
+						   dto.setCity(eachUser.getDetails().getCity());
+						   dto.setCountry(eachUser.getDetails().getCountry());
+						   
+					   }
+					   if(eachUser.getSkills()!=null) {
+						   dto.setSkills(eachUser.getSkills());
+						   }
+					   match=true;
+				   }
+				   
+				   else if(eachUser.getDetails()!=null && (searchterm.trim().equalsIgnoreCase(eachUser.getDetails().getCity()) || searchterm.trim().equalsIgnoreCase(eachUser.getDetails().getCountry()) || searchterm.trim().equalsIgnoreCase(eachUser.getDetails().getBio()))) {
+					   dto.setName(name+" "+lastname);
+					   dto.setId(eachUser.getId());
+					   dto.setBio(eachUser.getDetails().getBio());
+					   dto.setCity(eachUser.getDetails().getCity());
+					   dto.setCountry(eachUser.getDetails().getCountry());
+					   if(eachUser.getSkills()!=null) {
+						   dto.setSkills(eachUser.getSkills());
+						   }
+					   match=true;
+					   
+				   }
+				  
+				   
+				   else if(eachUser.getSkills()!=null && eachUser.getSkills().contains(searchterm) ) {
+					   dto.setName(name+" "+lastname);
+					   dto.setId(eachUser.getId());
+					   if(eachUser.getDetails()!=null) {
+					   dto.setBio(eachUser.getDetails().getBio());
+					   dto.setCity(eachUser.getDetails().getCity());
+					   dto.setCountry(eachUser.getDetails().getCountry());
+					   }
+					   
+						   dto.setSkills(eachUser.getSkills());
+						   
+						   match=true;
+					   
+				   }
+				   
+				   
+				   if(match==true) {
+				   publicUser.add(dto);
+				   }
+				   
+				   
+			   }
+			   
+		   }
+		   
+		   model.addAttribute("publicusers", publicUser);
+		   model.addAttribute("user",user);
+		   session.setAttribute("user", user);
+		   
+		   if(publicUser.isEmpty()) {
+			   model.addAttribute("noUser","No User matching is found");
+		   }
+		   
+		   
+		   
+		   return "findtutor";
+	   }
+	   
+	   @PostMapping("/send-request")
+	   @ResponseBody
+	   public String sendRequest(@RequestBody Map<String, Object> publicuser,Model model, HttpSession session) {
+		   User user=(User)session.getAttribute("user");
+		   
+		  String publicuserIdString=(String)publicuser.get("userid");
+		  
+		  int publicuserId=Integer.parseInt(publicuserIdString);
+		  
+		  Optional<User> publicUserOptional=op.findById(publicuserId);
+		  
+		  
+		   
+		   if(user!=null) {
+			   if(publicUserOptional.isPresent()) {
+				   User publiUser=publicUserOptional.get();
+				   FriendList friendList=new FriendList();
+				   friendList.setReceiver(publiUser);
+				   friendList.setSender(user);
+				   friendList.setStatus("requested");
+				   
+				   friendListService.saveUser(friendList);
+			   }
+			   
+			   
+			   
+			  
+		   }
+		   model.addAttribute("user",user);
+		   
+		   
+		   return "Request sent to user";
 		   
 	   }
 	   
