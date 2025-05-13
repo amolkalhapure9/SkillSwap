@@ -1,5 +1,7 @@
 package com.skillswap.Dao;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -19,6 +21,13 @@ public class FriendListImpl implements FriendListService {
 		
 		 op.save(friendList);
 		 return true;
+		
+	}
+
+
+	@Override
+	public List<FriendList> friendList(String str) {
+		return op.findByStatus(str);
 		
 	}
 

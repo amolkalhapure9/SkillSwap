@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Notifications | SkillSwap</title>
+    <link rel="stylesheet" href="/css/notification.css"> 
+</head>
+<body>
+
+<header>
+    <h1>Notifications</h1>
+    <a href="/dashboard">Back to Dashboard</a>
+</header>
+
+<div class="container">
+    <!-- Tabs -->
+    <div class="tabs">
+        <button class="tab active" onclick="switchTab('skillRequests')">Skill Requests</button>
+        <button class="tab" onclick="switchTab('messages')">Messages</button>
+    </div>
+
+    <!-- Skill Requests -->
+    <div id="skillRequests" class="content active">
+        <div class="notification" th:each="notification: ${notification}">
+            <p><strong th:text="${notification.sender.fname+' '+notification.sender.lname}"></strong> wants to connect with you </p>
+            <p>Message: new Connection request Has been received</p>
+            <div class="actions">
+                <button class="btn btn-green">Accept</button>
+                <button class="btn btn-red">Reject</button>
+                <a th:href="@{'/publicprofile/'+${notification.sender.id}}" class="btn btn-blue">View Profile</a>
+            </div>
+        </div>
+        
+    </div>
+
+    <!-- Messages -->
+    <div id="messages" class="content">
+        <div class="notification">
+            <p><strong>Alex Johnson</strong> sent you a message</p>
+            <p>"Are you available for a quick session on Spring Boot?"</p>
+            <div class="actions">
+                <button class="btn btn-blue">Reply</button>
+                <button class="btn btn-blue">View Profile</button>
+            </div>
+        </div>
+        <div class="notification">
+            <p><strong>Sophie Lin</strong> sent you a message</p>
+            <p>"Can you help me with a frontend bug?"</p>
+            <div class="actions">
+                <button class="btn btn-blue">Reply</button>
+                <button  class="btn btn-blue">View Profile</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function switchTab(tabId) {
+        document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
+        document.querySelectorAll('.content').forEach(content => content.classList.remove('active'));
+
+        document.querySelector(`.tab[onclick*="${tabId}"]`).classList.add('active');
+        document.getElementById(tabId).classList.add('active');
+    }
+</script>
+
+</body>
+</html>

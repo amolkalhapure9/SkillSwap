@@ -490,6 +490,7 @@ public class MyController {
 		   
 	   }
 	   
+
 //	   
 	   @GetMapping("/searchUser")
 	   public String SearchParticularUserList(@RequestParam("searchterm") String searchterm, HttpSession session,Model model) {
@@ -581,6 +582,7 @@ public class MyController {
 		   return "findtutor";
 	   }
 	   
+	   
 	   @PostMapping("/send-request")
 	   @ResponseBody
 	   public String sendRequest(@RequestBody Map<String, Object> publicuser,Model model, HttpSession session) {
@@ -613,6 +615,28 @@ public class MyController {
 		   
 		   
 		   return "Request sent to user";
+	   }
+
+	   @GetMapping("/notification")
+	   public String openNotification(Model model, HttpSession session) {
+		   User user=(User)session.getAttribute("user");
+		   if(user==null) {
+			   return "login";
+		   }
+		   String status ="requested";
+	  
+		   List<FriendList> notification=friendListService.friendList(status);
+		   List<FriendList> myList=new ArrayList<>();
+		   for(FriendList friendList: notification) {
+			   if(friendList.getReceiver().getId()==user.getId()) {
+				   myList.add(friendList);
+			   }
+		   }
+		   
+		   model.addAttribute("user", user);
+		   model.addAttribute("notification", myList);
+		   return "notification";
+
 		   
 	   }
 	   

@@ -19,8 +19,11 @@
         <span th:if="${user==null}">
         <a href="loginPage" class="text-blue-600 font-semibold ">Login</a>
         <a href="regPage" class="text-blue-600 font-semibold ml-4">Register</a></span>
-        <span th:if="${user!=null}">Welcome
+        <span th:if="${user!=null}">
+        <a href="notification" class="text-gray-600 font-semibold ml-4 mr-4">Notifications</a>
+        Welcome
          <a href="/profile" class="text-blue-600 font-semibold ml-1" th:text="${user.fname}"></a> 
+         
          
          <a href="logout" class="ml-8">LogOut</a>
          
