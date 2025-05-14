@@ -621,7 +621,7 @@ public class MyController {
 	   public String openNotification(Model model, HttpSession session) {
 		   User user=(User)session.getAttribute("user");
 		   if(user==null) {
-			   return "login";
+			   return "redirect:/loginPage";
 		   }
 		   String status ="requested";
 	  
@@ -637,6 +637,34 @@ public class MyController {
 		   model.addAttribute("notification", myList);
 		   return "notification";
 
+		   
+	   }
+	   
+	   @PostMapping("/acceptRequest")
+	   @ResponseBody
+	   public String requestAccept(@RequestBody Map<String, Object> publicuser,  HttpSession session, Model model) {
+		   
+		 User user=(User)session.getAttribute("user");
+		 if(user==null) {
+			 return "redirect:/loginPage";
+		 }
+		 String senderid=(String)publicuser.get("senderid");
+		 int senderId=Integer.parseInt(senderid);
+		 
+		 Optional<User> senderOptional=op.findById(senderId);
+		 if(senderOptional.isPresent()) {
+			 User sender=senderOptional.get();
+			 boolean isAccepted=friendListService.isUpdated(sender, user, "Accepted");
+		 }
+		 
+		 
+		 
+		 
+	
+		 
+		 
+		 
+		return "NOt accpeted";
 		   
 	   }
 	   

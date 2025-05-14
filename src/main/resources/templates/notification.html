@@ -9,7 +9,7 @@
 
 <header>
     <h1>Notifications</h1>
-    <a href="/dashboard">Back to Dashboard</a>
+    <a href="/findtutor">Back to Dashboard</a>
 </header>
 
 <div class="container">
@@ -25,7 +25,7 @@
             <p><strong th:text="${notification.sender.fname+' '+notification.sender.lname}"></strong> wants to connect with you </p>
             <p>Message: new Connection request Has been received</p>
             <div class="actions">
-                <button class="btn btn-green">Accept</button>
+                <button id="isAccepted" class="accept-button btn btn-green" th:attr="data-user=${notification.sender.id}">Accept</button>
                 <button class="btn btn-red">Reject</button>
                 <a th:href="@{'/publicprofile/'+${notification.sender.id}}" class="btn btn-blue">View Profile</a>
             </div>
@@ -63,6 +63,8 @@
         document.getElementById(tabId).classList.add('active');
     }
 </script>
+<script src="/js/notificationaccept.js"></script> 
+
 
 </body>
 </html>
